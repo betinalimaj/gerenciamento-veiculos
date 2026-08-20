@@ -15,11 +15,11 @@ namespace GerenciamentoVeiculos.Tests
 
             var carro = new Carro
             {
-                Placa = "ESDSSD", 
-                Modelo = "2000",
+                Placa = "JJD7DDF", 
+                Modelo = "Uno",
                 Ano = 2000,
-                Marca = new Marca { Codigo = 1 },
-                Tipo = "Moto"
+                Marca = new Marca { Codigo = 11 },
+                Tipo = "Carro"
             };
 
             try

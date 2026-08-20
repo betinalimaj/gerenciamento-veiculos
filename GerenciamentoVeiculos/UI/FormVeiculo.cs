@@ -28,23 +28,35 @@ namespace GerenciamentoVeiculos.UI
 
             comboBox1.SelectedIndex = -1;
         }
-
         private void CarregarVeiculos()
         {
-            dataGridView2.Rows.Clear();
-
-            List<Veiculo> veiculos = veiculoService.Listar();
-
-            foreach (Veiculo veiculo in veiculos)
+            try
             {
-                dataGridView2.Rows.Add(
-                    veiculo.Codigo,
-                    veiculo.Marca.Nome,
-                    veiculo.Placa,
-                    veiculo.Modelo,
-                    veiculo.Ano,
-                    veiculo.Tipo
-                );
+                dataGridView2.Rows.Clear();
+
+                List<Veiculo> veiculos = veiculoService.Listar();
+
+                foreach (Veiculo veiculo in veiculos)
+                {
+                    dataGridView2.Rows.Add(
+                        veiculo.Codigo,
+                        veiculo.Marca.Nome,
+                        veiculo.Placa,
+                        veiculo.Modelo,
+                        veiculo.Ano,
+                        veiculo.Tipo
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.RegistrarErro(ex);
+
+                MessageBox.Show(
+                    "Não foi possível carregar os veículos.",
+                    "Erro",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
         public FormVeiculo()
@@ -117,9 +129,23 @@ namespace GerenciamentoVeiculos.UI
                 CarroButton.Checked = false;
                 MotoButton.Checked = false;
             }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Logger.RegistrarErro(ex);
+
+                MessageBox.Show(
+                    "Ocorreu um erro ao cadastrar o veículo.",
+                    "Erro",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -183,7 +209,13 @@ namespace GerenciamentoVeiculos.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Logger.RegistrarErro(ex);
+
+                MessageBox.Show(
+                    "Ocorreu um erro ao alterar o veículo. Tente novamente.",
+                    "Erro",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -193,36 +225,48 @@ namespace GerenciamentoVeiculos.UI
         }
         private void excluir_Click(object sender, EventArgs e)
         {
-            if (codigoSelecionado == 0)
+            try
             {
-                MessageBox.Show("Selecione um veículo.");
-                return;
+                if (codigoSelecionado == 0)
+                {
+                    MessageBox.Show("Selecione um veículo.");
+                    return;
+                }
+
+                DialogResult resposta = MessageBox.Show(
+                    "Deseja realmente excluir este veículo?",
+                    "Confirmação",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (resposta == DialogResult.Yes)
+                {
+                    veiculoService.Excluir(codigoSelecionado);
+
+                    MessageBox.Show("Veículo excluído com sucesso!");
+
+                    textBox1.Clear();
+                    textBox2.Clear();
+                    comboBox1.SelectedIndex = -1;
+                    CarroButton.Checked = false;
+                    MotoButton.Checked = false;
+                    numericUpDown1.Value = numericUpDown1.Minimum;
+                    codigoSelecionado = 0;
+
+                    CarregarVeiculos();
+                }
             }
-
-            DialogResult resposta = MessageBox.Show(
-                "Deseja realmente excluir este veículo?",
-                "Confirmação",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (resposta == DialogResult.Yes)
+            catch (Exception ex)
             {
-                veiculoService.Excluir(codigoSelecionado);
+                Logger.RegistrarErro(ex);
 
-                MessageBox.Show("Veículo excluído com sucesso!");
-
-                textBox1.Clear();
-                textBox2.Clear();
-                comboBox1.SelectedIndex = -1;
-                CarroButton.Checked = false;
-                MotoButton.Checked = false;
-                numericUpDown1.Value = numericUpDown1.Minimum;
-                codigoSelecionado = 0;
-
-                CarregarVeiculos();
+                MessageBox.Show(
+                    "Ocorreu um erro ao excluir o veículo.",
+                    "Erro",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
-
         private void dataGridView2_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -252,7 +296,13 @@ namespace GerenciamentoVeiculos.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                Logger.RegistrarErro(ex);
+
+                MessageBox.Show(
+                    "Não foi possível carregar os dados do veículo.",
+                    "Erro",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
     }
