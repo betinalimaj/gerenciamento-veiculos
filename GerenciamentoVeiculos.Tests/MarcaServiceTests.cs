@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GerenciamentoVeiculos.Service;
-using GerenciamentoVeiculos.Main;
 using System;
 
 namespace GerenciamentoVeiculos.Tests
@@ -15,14 +14,14 @@ namespace GerenciamentoVeiculos.Tests
 
             try
             {
-                service.Excluir(23);
+                service.Excluir(11); 
 
                 Assert.Fail("Era esperado uma exceção.");
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 Assert.AreEqual(
-                    "Erro ao excluir. Existe um veículo vinculado a essa marca.",
+                    "Não é possível excluir esta marca, pois ela está vinculada a um ou mais veículos.",
                     ex.Message);
             }
         }

@@ -55,26 +55,27 @@ public class MarcaRepository
 
     }
 
-public void Excluir(int codigo)
-{
-    Conexao conexao = new Conexao();
-
-    using NpgsqlConnection banco = conexao.AbrirConexao();
-
-    NpgsqlCommand comando = new NpgsqlCommand(
-        "DELETE FROM marca WHERE codigo = @codigo", banco);
-
-    comando.Parameters.AddWithValue("@codigo", codigo);
-
-    try
+    public void Excluir(int codigo)
     {
-        comando.ExecuteNonQuery();
+        Conexao conexao = new Conexao();
+
+        using NpgsqlConnection banco = conexao.AbrirConexao();
+
+        NpgsqlCommand comando = new NpgsqlCommand(
+            "DELETE FROM marca WHERE codigo = @codigo", banco);
+
+        comando.Parameters.AddWithValue("@codigo", codigo);
+
+        try
+        {
+            comando.ExecuteNonQuery();
+        }
+        catch (PostgresException)
+        {
+            throw new ArgumentException(
+                "Não é possível excluir esta marca, pois ela está vinculada a um ou mais veículos.");
+        }
     }
-    catch (PostgresException)
-    {
-        throw new Exception("Erro ao excluir. Existe um veículo vinculado a essa marca.");
-    }
-}
 
     public bool Existe(string nome)
     {

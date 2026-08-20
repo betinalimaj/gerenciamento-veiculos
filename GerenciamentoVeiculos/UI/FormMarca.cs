@@ -55,9 +55,23 @@ namespace GerenciamentoVeiculos.UI
 
                 textBox1.Clear();
             }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Logger.RegistrarErro(ex);
+
+                MessageBox.Show(
+                    "Ocorreu um erro inesperado. Consulte o administrador.",
+                    "Erro",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
 
         }
@@ -85,45 +99,73 @@ namespace GerenciamentoVeiculos.UI
 
                 CarregarMarcas();
             }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Logger.RegistrarErro(ex);
+
+                MessageBox.Show(
+                    "Ocorreu um erro inesperado. Consulte o administrador.",
+                    "Erro",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
-       private void excluir_Click(object sender, EventArgs e)
-{
-    try
-    {
-        if (codigoSelecionado == 0)
+        private void excluir_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Selecione uma marca.");
-            return;
+            try
+            {
+                if (codigoSelecionado == 0)
+                {
+                    MessageBox.Show("Selecione uma marca.");
+                    return;
+                }
+
+                DialogResult resposta = MessageBox.Show(
+                    "Deseja realmente excluir esta marca?",
+                    "Confirmação",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (resposta == DialogResult.Yes)
+                {
+                    service.Excluir(codigoSelecionado);
+
+                    MessageBox.Show("Marca excluída com sucesso!");
+
+                    textBox1.Clear();
+                    codigoSelecionado = 0;
+
+                    CarregarMarcas();
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(
+                    ex.Message,
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                Logger.RegistrarErro(ex);
+
+                MessageBox.Show(
+                    "Ocorreu um erro inesperado. Consulte o administrador.",
+                    "Erro",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
-
-        DialogResult resposta = MessageBox.Show(
-            "Deseja realmente excluir esta marca?",
-            "Confirmação",
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Question);
-
-        if (resposta == DialogResult.Yes)
-        {
-            service.Excluir(codigoSelecionado);
-
-            MessageBox.Show("Marca excluída com sucesso!");
-
-            textBox1.Clear();
-            codigoSelecionado = 0;
-
-            CarregarMarcas();
-        }
-    }
-    catch (Exception ex)
-    {
-        MessageBox.Show(ex.Message);
-    }
-}
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {

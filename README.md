@@ -47,10 +47,17 @@ GerenciamentoVeiculos
 ├── Main
 ├── Repository
 ├── Service
-└── UI
+├── UI
+├── Logger.cs
+├── Program.cs
+
 script.sql
 GerenciamentoVeiculos.Tests
 ```
+
+## Logger
+
+Foi implementado um sistema simples de registro de logs para armazenar erros inesperados da aplicação. Sempre que ocorre uma exceção não prevista, ela é registrada automaticamente no arquivo `log.txt`, contendo data, horário, mensagem do erro e stack trace. Já as validações de negócio, como cadastro duplicado ou campos obrigatórios, são tratadas com mensagens amigáveis ao usuário, sem necessidade de registro em log.
 
 ## Como executar
 
